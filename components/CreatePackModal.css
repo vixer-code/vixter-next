@@ -1,62 +1,105 @@
-/* Reuse identical visual layout and components from CreateServiceModal */
+/* CreatePackModal reuses CreateServiceModal styles */
 @import './CreateServiceModal.css';
 
-/* Minimal additions for license pill styles and pack file rows */
+/* Additional Pack-specific styles */
 .license-options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .license-checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #B8B8B8;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.license-checkbox:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.license-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
 }
 
 .preview-licenses {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+}
+
+.preview-licenses h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: #f5f5f5;
 }
 
 .license-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .license-tag {
-  background: linear-gradient(135deg, #00FFCA, #00D4AA);
-  color: #0F0F1A;
-  padding: 6px 12px;
-  border-radius: 20px;
+  background: rgba(138, 43, 226, 0.2);
+  color: #8A2BE2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
   font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Pack file upload specific styles */
+.pack-files-section {
+  margin-top: 1.5rem;
+}
+
+.pack-files-section label {
   font-weight: 600;
+  color: #f5f5f5;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
-.pack-files-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+/* Video showcase specific styles */
+.video-showcase {
+  position: relative;
 }
 
-.pack-file-row {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 12px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.video-showcase video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-.pack-file-row .file-name {
-  color: #B8B8B8;
-  font-size: 0.9rem;
-  word-break: break-word;
+/* Responsive adjustments for pack modal */
+@media (max-width: 768px) {
+  .license-options {
+    gap: 0.25rem;
+  }
+  
+  .license-checkbox {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .license-tags {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .license-checkbox {
+    font-size: 0.9rem;
+  }
+  
+  .license-tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
 }
