@@ -5,7 +5,7 @@ const nextConfig = {
   },
   images: {
     domains: [
-      'pub-your-r2-domain.r2.dev', // Replace with your R2 domain
+      'media.vixter.com.br', // Replace with your R2 domain
       'lh3.googleusercontent.com', // Google OAuth profile images
     ],
     remotePatterns: [
@@ -17,10 +17,7 @@ const nextConfig = {
       },
     ],
   },
-  env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  },
+
 }
 
 module.exports = nextConfig

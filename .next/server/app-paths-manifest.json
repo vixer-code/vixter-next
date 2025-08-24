@@ -1,16 +1,16 @@
 {
   "/_not-found": "app/_not-found.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/api/centrifugo/token/route": "app/api/centrifugo/token/route.js",
   "/api/centrifugo/typing/route": "app/api/centrifugo/typing/route.js",
   "/api/conversations/[id]/messages/route": "app/api/conversations/[id]/messages/route.js",
-  "/api/centrifugo/token/route": "app/api/centrifugo/token/route.js",
+  "/api/auth/register/route": "app/api/auth/register/route.js",
   "/api/conversations/route": "app/api/conversations/route.js",
-  "/api/media/upload/route": "app/api/media/upload/route.js",
   "/api/media/confirm/route": "app/api/media/confirm/route.js",
   "/api/users/[id]/route": "app/api/users/[id]/route.js",
+  "/api/media/upload/route": "app/api/media/upload/route.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
   "/feed/page": "app/feed/page.js",
   "/auth/signin/page": "app/auth/signin/page.js",
-  "/auth/signup/page": "app/auth/signup/page.js",
   "/page": "app/page.js"
 }
