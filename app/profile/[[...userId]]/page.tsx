@@ -177,8 +177,30 @@ const Profile = () => {
       setLoading(true)
       const response = await fetch(`/api/users/${userId}`)
       if (response.ok) {
-        const data = await response.json()
-        setProfile(data)
+        const userData = await response.json()
+        // Transform the data to match the expected structure
+        const transformedProfile = {
+          id: userData.profile?.id || '',
+          userId: userData.id,
+          bio: userData.profile?.bio || '',
+          avatarUrl: userData.profile?.avatarUrl || '',
+          interests: userData.profile?.interests || [],
+          location: userData.profile?.location || '',
+          languages: userData.profile?.languages || '',
+          hobbies: userData.profile?.hobbies || '',
+          aboutMe: userData.profile?.aboutMe || '',
+          createdAt: userData.profile?.createdAt || userData.createdAt,
+          updatedAt: userData.profile?.updatedAt || userData.updatedAt,
+          user: {
+            id: userData.id,
+            name: userData.name,
+            username: userData.username || '',
+            email: userData.email,
+            verified: userData.verified || false,
+            createdAt: userData.createdAt
+          }
+        }
+        setProfile(transformedProfile)
       }
     } catch (error) {
       console.error('Error loading profile:', error)
@@ -327,7 +349,8 @@ const Profile = () => {
   }
 
   const formatUserDisplayName = (user: any) => {
-    return user?.name || user?.username || 'Usuário'
+    if (!user) return 'Usuário'
+    return user.name || user.username || 'Usuário'
   }
 
   const getUserAvatarUrl = (user: any) => {
@@ -438,11 +461,11 @@ const Profile = () => {
           </div>
           
           <div className="user-details">
-            <h1>{formatUserDisplayName(profile.user)}</h1>
-            {profile.user.username && (
+            <h1>{formatUserDisplayName(profile?.user)}</h1>
+            {profile?.user?.username && (
               <p className="username">@{profile.user.username}</p>
             )}
-            {profile.bio && (
+            {profile?.bio && (
               <p className="bio">{profile.bio}</p>
             )}
             

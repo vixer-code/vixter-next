@@ -28,6 +28,15 @@
       "static/css/a269dbeb637eee92.css",
       "static/chunks/app/auth/signin/page-37b1792a1bafed75.js"
     ],
+    "/auth/signup/page": [
+      "static/chunks/webpack-2ef4f0c88367dbc9.js",
+      "static/chunks/fd9d1056-f8cf6a3d202af8bd.js",
+      "static/chunks/938-0ee8fee85b3e8de2.js",
+      "static/chunks/main-app-dc02f63b5e0cac42.js",
+      "static/chunks/396-05b452fc10ed6707.js",
+      "static/css/a269dbeb637eee92.css",
+      "static/chunks/app/auth/signup/page-edaf3bb7110860e8.js"
+    ],
     "/feed/page": [
       "static/chunks/webpack-2ef4f0c88367dbc9.js",
       "static/chunks/fd9d1056-f8cf6a3d202af8bd.js",
@@ -39,14 +48,14 @@
       "static/css/62f0585768f85f9a.css",
       "static/chunks/app/feed/page-0029f0e4b5b4c411.js"
     ],
-    "/auth/signup/page": [
+    "/wallet/page": [
       "static/chunks/webpack-2ef4f0c88367dbc9.js",
       "static/chunks/fd9d1056-f8cf6a3d202af8bd.js",
       "static/chunks/938-0ee8fee85b3e8de2.js",
       "static/chunks/main-app-dc02f63b5e0cac42.js",
-      "static/chunks/396-05b452fc10ed6707.js",
-      "static/css/a269dbeb637eee92.css",
-      "static/chunks/app/auth/signup/page-edaf3bb7110860e8.js"
+      "static/chunks/232-eb60b45d6435df5a.js",
+      "static/css/ecf9d0da16f169b8.css",
+      "static/chunks/app/wallet/page-65684117d6e512bf.js"
     ],
     "/page": [
       "static/chunks/webpack-2ef4f0c88367dbc9.js",
@@ -57,15 +66,6 @@
       "static/css/f9c17e68e4b5e72e.css",
       "static/chunks/app/page-5901167902f583ee.js"
     ],
-    "/wallet/page": [
-      "static/chunks/webpack-2ef4f0c88367dbc9.js",
-      "static/chunks/fd9d1056-f8cf6a3d202af8bd.js",
-      "static/chunks/938-0ee8fee85b3e8de2.js",
-      "static/chunks/main-app-dc02f63b5e0cac42.js",
-      "static/chunks/232-eb60b45d6435df5a.js",
-      "static/css/ecf9d0da16f169b8.css",
-      "static/chunks/app/wallet/page-65684117d6e512bf.js"
-    ],
     "/profile/[[...userId]]/page": [
       "static/chunks/webpack-2ef4f0c88367dbc9.js",
       "static/chunks/fd9d1056-f8cf6a3d202af8bd.js",
@@ -74,7 +74,7 @@
       "static/chunks/232-eb60b45d6435df5a.js",
       "static/chunks/691-9c13137b26bb8446.js",
       "static/css/932a439ca0d7cedb.css",
-      "static/chunks/app/profile/[[...userId]]/page-c3c0bb414d81d84f.js"
+      "static/chunks/app/profile/[[...userId]]/page-5acb5dd28a46df55.js"
     ]
   }
 }
