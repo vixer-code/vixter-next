@@ -233,7 +233,7 @@ vixter-next/
 
 1. **Start Centrifugo locally**:
    ```bash
-   docker-compose up -d centrifugo
+   docker-compose up -d centrifugo11
    ```
 
 2. **Deploy to Fly.io** (production):
