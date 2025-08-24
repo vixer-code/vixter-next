@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "prisma generate && npm run build",
+  "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "functions": {
@@ -8,6 +8,7 @@
       "maxDuration": 30
     }
   },
+
   "headers": [
     {
       "source": "/api/(.*)",
