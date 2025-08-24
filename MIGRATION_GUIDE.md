@@ -76,7 +76,7 @@ vixter-next/
    Update `.env` with your credentials:
    ```env
    # Your Neon PostgreSQL URL
-   DATABASE_URL="postgresql://neondb_owner:npg_4hmSkX2jqgxb@ep-small-field-adon8dwd-pooler.c-2.us-east-1.aws.neon.tech/vixter?sslmode=require&channel_binding=require"
+   DATABASE_URL="****"
    
    # NextAuth configuration
    NEXTAUTH_URL="http://localhost:3000"
