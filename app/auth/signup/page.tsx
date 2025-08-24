@@ -22,11 +22,11 @@ export default function Register() {
     bio: '',
     languages: '',
     avatarChoice: 'avatar1',
-    customAvatar: null,
+    customAvatar: null as File | null,
     
     // Step 3: Preferences
     accountType: '',
-    interests: [],
+    interests: [] as string[],
     emailNotifications: true,
     marketingUpdates: false,
     
@@ -34,9 +34,9 @@ export default function Register() {
     fullName: '',
     cpf: '',
     documents: {
-      front: null,
-      back: null,
-      selfie: null
+      front: null as File | null,
+      back: null as File | null,
+      selfie: null as File | null
     }
   })
 
@@ -246,10 +246,11 @@ export default function Register() {
     const handleInputContent = () => {
       const inputs = document.querySelectorAll('.input-group input, .input-group textarea')
       
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
+        const inputElement = input as HTMLInputElement | HTMLTextAreaElement
         const inputGroup = input.closest('.input-group')
         if (inputGroup) {
-          if (input.value.trim() !== '') {
+          if (inputElement.value.trim() !== '') {
             inputGroup.classList.add('has-content')
           } else {
             inputGroup.classList.remove('has-content')
@@ -263,18 +264,20 @@ export default function Register() {
 
     // Add event listeners
     const inputs = document.querySelectorAll('.input-group input, .input-group textarea')
-    inputs.forEach(input => {
-      input.addEventListener('input', handleInputContent)
-      input.addEventListener('blur', handleInputContent)
-      input.addEventListener('focus', handleInputContent)
+    inputs.forEach((input) => {
+      const inputElement = input as HTMLInputElement | HTMLTextAreaElement
+      inputElement.addEventListener('input', handleInputContent)
+      inputElement.addEventListener('blur', handleInputContent)
+      inputElement.addEventListener('focus', handleInputContent)
     })
 
     // Cleanup
     return () => {
-      inputs.forEach(input => {
-        input.removeEventListener('input', handleInputContent)
-        input.removeEventListener('blur', handleInputContent)
-        input.removeEventListener('focus', handleInputContent)
+      inputs.forEach((input) => {
+        const inputElement = input as HTMLInputElement | HTMLTextAreaElement
+        inputElement.removeEventListener('input', handleInputContent)
+        inputElement.removeEventListener('blur', handleInputContent)
+        inputElement.removeEventListener('focus', handleInputContent)
       })
     }
   }, [currentStep]) // Re-run when step changes to handle new inputs
