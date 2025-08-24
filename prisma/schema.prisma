@@ -1,0 +1,419 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js required tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Core User System
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String? // For email/password auth
+  username      String?   @unique
+  dateOfBirth   DateTime?
+  verified      Boolean   @default(false) // Identity verification status
+  cpf           String?   @unique // Brazilian CPF for identity verification
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth.js relations
+  accounts Account[]
+  sessions Session[]
+
+  // App relations
+  profile              Profile?
+  sentMessages         Message[]              @relation("MessageSender")
+  conversationMembers  ConversationMember[]
+  media                Media[]
+  sentTransactions     Transaction[]          @relation("TransactionSender")
+  receivedTransactions Transaction[]          @relation("TransactionReceiver")
+  services             Service[]
+  packs                Pack[]
+  serviceOrders        ServiceOrder[]         @relation("ServiceOrderBuyer")
+  soldServices         ServiceOrder[]         @relation("ServiceOrderSeller")
+  posts                Post[]
+  postLikes            PostLike[]
+  followers            Follow[]               @relation("UserFollowers")
+  following            Follow[]               @relation("UserFollowing")
+  reviews              Review[]               @relation("ReviewAuthor")
+  receivedReviews      Review[]               @relation("ReviewTarget")
+  notifications        Notification[]
+
+  @@map("users")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  bio       String?
+  avatarUrl String?
+  interests String[] // Array of interests
+  location  String?
+  languages String?
+  hobbies   String?
+  aboutMe   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// Media Storage
+model Media {
+  id        String    @id @default(cuid())
+  userId    String
+  url       String
+  type      MediaType
+  isAdult   Boolean   @default(false)
+  filename  String?
+  size      Int?
+  mimeType  String?
+  createdAt DateTime  @default(now())
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  posts    Post[]
+
+  @@map("media")
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+}
+
+// Messaging System
+model Conversation {
+  id              String               @id @default(cuid())
+  name            String? // For group conversations
+  type            ConversationType     @default(DIRECT)
+  serviceOrderId  String? // Link to service order for service conversations
+  lastMessageId   String?
+  lastMessageTime DateTime?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  members      ConversationMember[]
+  messages     Message[]
+  serviceOrder ServiceOrder?        @relation(fields: [serviceOrderId], references: [id])
+
+  @@map("conversations")
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+  SERVICE
+}
+
+model ConversationMember {
+  id             String   @id @default(cuid())
+  conversationId String
+  userId         String
+  joinedAt       DateTime @default(now())
+  leftAt         DateTime?
+  isAdmin        Boolean  @default(false)
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_members")
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String?
+  type           MessageType @default(TEXT)
+  mediaId        String?
+  replyToId      String?
+  read           Boolean     @default(false)
+  readAt         DateTime?
+  readBy         String?
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  media        Media?       @relation(fields: [mediaId], references: [id])
+  replyTo      Message?     @relation("MessageReply", fields: [replyToId], references: [id])
+  replies      Message[]    @relation("MessageReply")
+
+  @@map("messages")
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+  SERVICE_NOTIFICATION
+  SYSTEM
+}
+
+// Social Features
+model Post {
+  id        String   @id @default(cuid())
+  userId    String
+  content   String
+  mediaId   String?
+  hashtags  String[] // Array of hashtags
+  isAdult   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media Media?     @relation(fields: [mediaId], references: [id])
+  likes PostLike[]
+
+  @@map("posts")
+}
+
+model PostLike {
+  id     String @id @default(cuid())
+  postId String
+  userId String
+
+  post User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("post_likes")
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follows")
+}
+
+// Services & Marketplace
+model Service {
+  id          String        @id @default(cuid())
+  userId      String
+  title       String
+  description String
+  price       Decimal       @db.Decimal(10, 2)
+  category    String
+  tags        String[]
+  isActive    Boolean       @default(true)
+  isAdult     Boolean       @default(false)
+  deliveryTime Int? // in days
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders ServiceOrder[]
+
+  @@map("services")
+}
+
+model Pack {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  mediaCount  Int // Number of media items in pack
+  isActive    Boolean  @default(true)
+  isAdult     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("packs")
+}
+
+model ServiceOrder {
+  id           String             @id @default(cuid())
+  serviceId    String
+  buyerId      String
+  sellerId     String
+  status       ServiceOrderStatus @default(PENDING)
+  amount       Decimal            @db.Decimal(10, 2)
+  description  String?
+  deliveredAt  DateTime?
+  cancelledAt  DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  service       Service        @relation(fields: [serviceId], references: [id])
+  buyer         User           @relation("ServiceOrderBuyer", fields: [buyerId], references: [id])
+  seller        User           @relation("ServiceOrderSeller", fields: [sellerId], references: [id])
+  conversations Conversation[]
+  reviews       Review[]
+
+  @@map("service_orders")
+}
+
+enum ServiceOrderStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+model Review {
+  id              String @id @default(cuid())
+  serviceOrderId  String
+  authorId        String
+  targetId        String
+  rating          Int // 1-5 stars
+  comment         String?
+  createdAt       DateTime @default(now())
+
+  serviceOrder ServiceOrder @relation(fields: [serviceOrderId], references: [id])
+  author       User         @relation("ReviewAuthor", fields: [authorId], references: [id])
+  target       User         @relation("ReviewTarget", fields: [targetId], references: [id])
+
+  @@unique([serviceOrderId, authorId])
+  @@map("reviews")
+}
+
+// Transactions & Wallet
+model Transaction {
+  id          String            @id @default(cuid())
+  senderId    String?
+  receiverId  String?
+  amount      Decimal           @db.Decimal(10, 2)
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  description String?
+  stripeId    String? // Stripe payment intent ID
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  sender   User? @relation("TransactionSender", fields: [senderId], references: [id])
+  receiver User? @relation("TransactionReceiver", fields: [receiverId], references: [id])
+
+  @@map("transactions")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  SERVICE_PAYMENT
+  PACK_PURCHASE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+// Notifications
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json? // Additional data as JSON
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  MESSAGE
+  SERVICE_ORDER
+  PAYMENT
+  FOLLOW
+  LIKE
+  REVIEW
+  SYSTEM
+}
+
+// Admin & Verification
+model IdentityVerification {
+  id        String                    @id @default(cuid())
+  userId    String                    @unique
+  cpf       String
+  fullName  String
+  status    IdentityVerificationStatus @default(PENDING)
+  documents Json? // Store document URLs and metadata
+  notes     String? // Admin notes
+  verifiedAt DateTime?
+  verifiedBy String? // Admin user ID
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @updatedAt
+
+  @@map("identity_verifications")
+}
+
+enum IdentityVerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REQUIRES_RESUBMISSION
+}

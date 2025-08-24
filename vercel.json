@@ -1,0 +1,49 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "NEXTAUTH_SECRET": "@nextauth_secret",
+    "NEXTAUTH_URL": "@nextauth_url",
+    "GOOGLE_CLIENT_ID": "@google_client_id",
+    "GOOGLE_CLIENT_SECRET": "@google_client_secret",
+    "R2_ACCOUNT_ID": "@r2_account_id",
+    "R2_ACCESS_KEY_ID": "@r2_access_key_id",
+    "R2_SECRET_ACCESS_KEY": "@r2_secret_access_key",
+    "R2_BUCKET_NAME": "@r2_bucket_name",
+    "R2_PUBLIC_URL": "@r2_public_url",
+    "CENTRIFUGO_URL": "@centrifugo_url",
+    "CENTRIFUGO_API_URL": "@centrifugo_api_url",
+    "CENTRIFUGO_API_KEY": "@centrifugo_api_key",
+    "CENTRIFUGO_TOKEN_HMAC_SECRET": "@centrifugo_token_secret",
+    "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret"
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
+}
