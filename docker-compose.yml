@@ -1,59 +1,56 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # Centrifugo for real-time messaging
-  centrifugo:
-    build:
-      context: ./docker/centrifugo
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=${CENTRIFUGO_TOKEN_HMAC_SECRET}
-      - CENTRIFUGO_API_KEY=${CENTRIFUGO_API_KEY}
-      - CENTRIFUGO_ADMIN_PASSWORD=${CENTRIFUGO_ADMIN_PASSWORD:-admin123}
-      - CENTRIFUGO_ADMIN_SECRET=${CENTRIFUGO_ADMIN_SECRET:-admin-secret}
-    volumes:
-      - ./docker/centrifugo/config.json:/centrifugo/config.json
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # PostgreSQL (for local development - use Neon in production)
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16
+    container_name: social_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: vixter
+      POSTGRES_PASSWORD: vixterpass
+      POSTGRES_DB: vixterdb
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=vixter
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
-  # Redis (for caching and sessions)
   redis:
-    image: redis:7-alpine
+    image: redis:7
+    container_name: social_redis
+    restart: always
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+
+  centrifugo:
+    image: centrifugo/centrifugo:v6
+    container_name: social_centrifugo
+    restart: always
+    command: centrifugo -c config.json --admin
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./centrifugo/config.json:/centrifugo/config.json:ro
+    working_dir: /centrifugo
+    depends_on:
+      - redis
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: social_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
   redis_data:
+  pgadmin_data:

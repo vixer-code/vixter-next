@@ -1,0 +1,11 @@
+{
+  "secret": "supersecretkey",
+  "admin": true,
+  "api_key": "centrifugoapikey",
+  "token_hmac_secret_key": "anothersecretkey",
+  "admin_password": "admin",
+  "admin_secret": "adminsecret",
+  "allowed_origins": ["*"],
+  "broker": "redis",
+  "redis_address": "redis:6379"
+}
