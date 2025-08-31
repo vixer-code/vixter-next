@@ -27,7 +27,7 @@ services:
     image: centrifugo/centrifugo:v6
     container_name: social_centrifugo
     restart: always
-    command: centrifugo -c config.json --admin
+    command: centrifugo -c config.json --admin.enabled
     ports:
       - "8000:8000"
     volumes:

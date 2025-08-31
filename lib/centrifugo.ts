@@ -6,11 +6,18 @@ export interface CentrifugoConfig {
   tokenSecret: string
 }
 
+// Default configuration for local development
+const defaultConfig: CentrifugoConfig = {
+  apiUrl: process.env.CENTRIFUGO_API_URL || 'http://localhost:8000',
+  apiKey: process.env.CENTRIFUGO_API_KEY || 'your_api_key_here',
+  tokenSecret: process.env.CENTRIFUGO_TOKEN_SECRET || 'your_token_secret_here',
+}
+
 export class CentrifugoClient {
   private config: CentrifugoConfig
 
-  constructor(config: CentrifugoConfig) {
-    this.config = config
+  constructor(config?: Partial<CentrifugoConfig>) {
+    this.config = { ...defaultConfig, ...config }
   }
 
   // Generate JWT token for user authentication with Centrifugo

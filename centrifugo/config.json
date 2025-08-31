@@ -1,11 +1,49 @@
 {
-  "secret": "supersecretkey",
-  "admin": true,
-  "api_key": "centrifugoapikey",
-  "token_hmac_secret_key": "anothersecretkey",
-  "admin_password": "admin",
-  "admin_secret": "adminsecret",
-  "allowed_origins": ["*"],
-  "broker": "redis",
-  "redis_address": "redis:6379"
+  "token_hmac_secret_key": "kPK9Y2U0UWfrCxki1uv8okW-rumjWW3OjQPzTVYkLpQzgL2yIovH84SbEAJ2511csCLefZu3BP5xZjAC3pLWKw",
+  "api_key": "SdjLUyziuH4biZkZoZ614mfkhGrU3pYNfnis9HAIa5xCnY6_H1H8X_8DIpNqysObwZoH6w5r83cUYlnnJRgcvg",
+  "admin": {
+    "enabled": true,
+    "password": "admin123",
+    "secret": "your_admin_secret_here"
+  },
+  "allowed_origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+
+  "publish": true,
+  "subscribe_to_publish": true,
+  "presence": true,
+  "join_leave": true,
+  "history_size": 10,
+  "history_ttl": "300s",
+  "force_recovery": true,
+
+  "namespaces": [
+    {
+      "name": "user",
+      "publish": false,
+      "subscribe_to_publish": false,
+      "presence": false,
+      "join_leave": false,
+      "history_size": 0,
+      "history_ttl": "0s"
+    },
+    {
+      "name": "conversation",
+      "publish": true,
+      "subscribe_to_publish": true,
+      "presence": true,
+      "join_leave": true,
+      "history_size": 50,
+      "history_ttl": "3600s",
+      "force_recovery": true
+    },
+    {
+      "name": "typing",
+      "publish": true,
+      "subscribe_to_publish": false,
+      "presence": false,
+      "join_leave": false,
+      "history_size": 0,
+      "history_ttl": "0s"
+    }
+  ]
 }
